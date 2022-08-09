@@ -1,0 +1,2 @@
+# easyVAF
+Somatic sequence variants are associated with a cancer diagnosis, prognostic stratification, and treatment response. Variant allele frequency (VAF) is the percentage of sequence reads with a specific DNA variant over the read depth at that locus. VAFs on targeted loci under different (experimental) conditions are often compared. We present our R package  ‘ esayVAF’ for parametric and non-parametric comparison of VAFs among multiple treatment groups. 
