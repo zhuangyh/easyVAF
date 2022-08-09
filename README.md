@@ -6,6 +6,7 @@ To install and use the package, you may download the directory or follow the ins
 
 # Install package
 if (!require("devtools")) install.packages("devtools")
+
 devtools::install_github("zhuangyh/easyVAF")
 
 # Load package
