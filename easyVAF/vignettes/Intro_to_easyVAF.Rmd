@@ -1,0 +1,183 @@
+---
+title: "Introduction to the easyVAF R package"
+author:
+- name: Junxiao Hu
+  affiliation: 
+  - &id Cancer Center Biostatistics Core, University of Colorado Denver|Anschutz Medical Campus
+  email: Junxiao.Hu@CUAnschutz.edu
+
+- name: Vida Alami 
+  affiliation: *id 
+  
+- name: Yonghua Zhuang 
+  affiliation: *id 
+  
+- name: Dexiang Gao
+  affiliation: *id
+
+date: "`r Sys.Date()`"
+# package: easyVAF
+abstract: >
+    Somatic sequence variants are associated with a cancer diagnosis, prognostic stratification, and treatment response. Variant allele frequency (VAF) is the percentage of sequence reads with a specific DNA variant over the read depth at that locus. VAFs on targeted loci under different (experimental) conditions are often compared. We present our R package  ‘ esayVAF’ for parametric and non-parametric comparison of VAFs among multiple treatment groups. 
+    
+    
+# output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to the easyVAF R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  
+# bibliography: VAF.bib  
+output: BiocStyle::pdf_document
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# easyVAF overview
+**Note:** if you use easyVAF in published research, please cite:
+
+> Junxiao Hu,Vida Alami, Yonghua Zhuang, Dexiang Gao.  “easyVAF, a R package for VAF comparison among groups”. Journal of Open Source Software, 2022. (*Submitted*)
+
+
+```{r flowchart, fig.cap = "SmCCNet workflow overview. .", echo = FALSE, eval=FALSE}
+knitr::include_graphics("easyVAFWorkflow.pdf")
+```
+
+
+## easyVAF package
+
+The easyVAF package has the following dependencies: 
+
+```{r, echo = FALSE, results = "hide", warning = FALSE, eval = TRUE}
+suppressPackageStartupMessages({
+    library(dplyr)
+    library(tibble)
+    library(aod)
+    library(ggplot2)
+    library(lme4)
+})
+```
+
+
+
+The current version of the easyVAF package includes three (external) functions: 
+
+
+- **QCchecking()**: Quality checking for biological variability among samples. 
+- **Taronetest()**: Test for overdispersion in Poisson and Binomial Regression Models.
+- **VAFmain()**: comparison of VAFs among N groups.
+
+
+More details on above functions can be found in the package manual.
+
+
+# easyVAF workflow
+
+We recommend VAF analysis work flow as following: 
+
+* 1). Start with exploratory plots for Variant Allele Count, Read Depth, and VAF for quality checking (i.e., unexpected biological variability, batch effect, technical effect); 
+
+* 2). Conduct statistical test to assess the variability of overall VAF distribution among the experiment samples (i.e., test if the heterogeneity of experiment samples is significant within each treatment group); 
+
+* 3).The main comparison of VAFs will be conducted as described below: 
+
+    + a). For each locus, the good-ness of fit test for binomial distribution (overdispersion) is conducted first; 
+
+    + b). Appropriate method (model-based or non-parametric) will be selected to perform the VAF comparison among treatment groups; 
+
+    + c).	The raw and adjusted p-values will be reported for each locus, accompanied with the estimated VAFs, difference in VAFs and the corresponding confidence intervals (only available for two group comparisons).
+
+## Example dataset
+
+In this document, we illustrate a standard workflow of VAF comparisons with a mouse VAF dataset.
+
+```{r example data, results="asis"}
+library(easyVAF)
+library(knitr)
+data(dat)
+names(VAF)
+print(kable(head(VAF), row.names=F,
+            caption="VAF data example"))
+
+```
+
+The data contains the following columns:
+
+* locus: locus ID
+* vc: variant count (to calculate VAF)
+* dp: read depth (to calculate VAF)
+* chrom: chromosome information (for linkage disequilibrium adjustment in QC test, if desired)
+* sample: mouse ID (for QC test)
+* group: treatment group
+
+
+## Quality checking for biological variability among samples
+
+```{r QC, warning = FALSE, results="asis"}
+rslt <- QCchecking(data=VAF, method="lm")
+rslt
+```
+
+## Tarone test: overdispersion tests
+
+We use Tarone test to examine overdispersion in Poisson and Binomial Regression Models.
+
+```{r Tarone, warning = FALSE, results="asis"}
+Tarone.test(sum(VAF$dp),sum(VAF$vc))
+```
+
+
+## Comparison of VAFs among N groups
+
+We perform the comparisons for all four groups as illustration.
+
+
+```{r mainCom, results="asis", warning = FALSE}
+library(easyVAF)
+#4 groups
+groups <- unique(VAF$group)[c(1:4)]
+rslt <- VAFmain(data=VAF, groups=groups)
+rslt$P.value <- as.numeric(rslt$P.value)
+names(rslt)
+toploci <- head(rslt[order(as.numeric(rslt$P.value)), c("ID",
+"P.value",          
+"Overdispersion",   "p.adjust",       
+"sig.diff.fdr")], n=10)
+
+print(kable(toploci, row.names=F,
+            caption="Top 10 significantly different loci, multiple group comparison",
+            digits=3))
+            
+
+groups <- unique(VAF$group)[c(1:2)]
+rslt <- VAFmain(data=VAF, groups=groups)
+rslt$P.value <- as.numeric(rslt$P.value)
+names(rslt)
+toploci <- head(rslt[order(as.numeric(rslt$P.value)), c("ID",     "Effect.size",  "95% CI",   
+                "p.adjust", "sig.diff.fdr", "Change.direction")], n=10)
+
+print(kable(toploci, row.names=F,
+            caption="Top 10 significantly different loci, two groups",
+            digits=3))
+            
+```
+
+# References
+
+> Junxiao Hu,Vida Alami, Yonghua Zhuang, Dexiang Gao.  “easyVAF, a R package for VAF comparison among groups”. Journal of Open Source Software, 2022. (*Submitted*)
+
+
+
+<!-- We also perform the comparisons for first two groups as illustration.  -->
+
+<!-- ```{r VAFcom2, warning = FALSE} -->
+
+<!-- VAFcom2 <- VAFmain(data=dat, groups=groups[1:2]) -->
+<!-- VAFcom2 -->
+<!-- ``` -->
