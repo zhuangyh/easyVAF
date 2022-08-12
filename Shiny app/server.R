@@ -1,38 +1,25 @@
 server <- function(input, output) {
 
-  # type conversion helper function
-
-  data.type<- function(data, to_factor = NULL, to_numeric = NULL, to_character = NULL) {
-
-    data <- data %>%
-      mutate(across(all_of(to_factor), factor)) %>%
-      mutate(across(all_of(to_numeric), as.numeric)) %>%
-      mutate(across(all_of(to_character), as.character))
-
-  }
-
   # making reactive dataset from input file (accept .csv only)
 
-  dat <- eventReactive(input$file1, {
+  dat <- reactive({
     dat <- req(input$file1)
     df <- read.csv(dat$datapath)
-    df <- data.type(df, to_factor = c("chrom", "sample", "individual", "group"))
+    df <- df %>% mutate(across(all_of(c("chrom", "sample", "group")), factor))
     df
   })
 
-  # dynamically populate a checkbox question with the groups that are in this particular dataset
+  # dynamically populate a checkbox selection question with the groups that are in this particular dataset
 
   output$groups <- renderUI({
-    req(dat())
     checkboxGroupInput("groups_test", "Select groups",
                        choices = unique(dat()$group),
                        selected = unique(dat()$group),
                        inline = FALSE)
   })
 
-  # create a subsetted version of the data with only the user-selected groups
 
-
+  # create reactive objects for each user selection so that changes are only updated throughout the rest of the app upon pressing the action button
 
   groups_selected <- eventReactive(input$run_analysis,{
     x <- isolate(input$groups_test)
@@ -59,11 +46,14 @@ server <- function(input, output) {
     x
   })
 
+  # groups have to be identified from whole dataset first, then data can be subsetted after user selects groups
+
   dat_subset <- eventReactive(input$run_analysis, {
     df <- req(dat())
     df <- df[df$group %in% groups_selected(),]
     df
   })
+
 ########## CREATION OF RESULT DF ###############
 
 
@@ -101,29 +91,30 @@ server <- function(input, output) {
                           "Sig. change (>0.2)",
                           "Direction")
 
-    # convert read depth columns to numeric data type to compute total read depth for stats plot
+    # make sure numeric columns are numeric
     to_numeric <- colnames(result)[grepl("DP", colnames(result)) | grepl("VC", colnames(result)) | grepl("VAF", colnames(result)) | grepl("P value", colnames(result))]
     result <- result %>%
       mutate(across(all_of(to_numeric), as.numeric)) %>%
-      mutate(`Total Read Depth` = rowSums(select(.,starts_with("DP"))))
+      mutate(`Total Read Depth` = rowSums(select(.,starts_with("DP")))) %>%
+      mutate(across("Test", factor))
 
     result
   })
+
   ###################################################
 
 
   # Exploratory Analysis ----
   observeEvent(input$run_analysis, {
 
-    # INTERACTIVE SCATTER PLOT 1: READ DEPTH ----
+    # INTERACTIVE SCATTER PLOT 1: READ DEPTH -------------------------------------
 
     ranges <- reactiveValues(x = NULL, y = NULL)
 
     output$exploratory_plot1 <- renderPlot({
       df <- isolate(dat_subset())
-
-      base_plot <- ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=dp)) +
-        geom_point(aes(shape = individual,
+      ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=dp)) +
+        geom_point(aes(shape = sample,
                        colour=group),
                    size=3)+
         xlab("Loci ordered by the mean of read depth")+
@@ -131,11 +122,6 @@ server <- function(input, output) {
         ggtitle("Scatter plot of read depth")+
         coord_cartesian(xlim = ranges$x, ylim = ranges$y)
 
-      if (length(groups_selected()) > 6) {
-        base_plot + theme(legend.position = "none")
-      } else {
-        base_plot
-      }
     })
 
     observeEvent(input$plot1_dblclick, {
@@ -151,26 +137,20 @@ server <- function(input, output) {
     })
 
 
-    # INTERACTIVE SCATTER PLOT 2: VARIANT COUNT ----
+    # INTERACTIVE SCATTER PLOT 2: VARIANT COUNT -------------------------------------
 
     ranges2 <- reactiveValues(x=NULL, y=NULL)
 
     output$exploratory_plot2 <- renderPlot({
       df <- isolate(dat_subset())
-      base_plot <- ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=vc)) +
-        geom_point(aes(shape = individual,
+      ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=vc)) +
+        geom_point(aes(shape = sample,
                        colour = group),
                    size=3)+
         xlab("Loci ordered by the mean of read depth")+
         ylab("Variant counts")+
         ggtitle("Scatter plot of variant count")+
         coord_cartesian(xlim = ranges2$x, ylim = ranges2$y)
-
-      if (length(groups_selected()) > 6) {
-        base_plot + theme(legend.position = "none")
-      } else {
-        base_plot
-      }
     })
 
     observeEvent(input$plot2_dblclick, {
@@ -186,26 +166,20 @@ server <- function(input, output) {
     })
 
 
-    # INTERACTIVE SCATTER PLOT 3: VAF ----
+    # INTERACTIVE SCATTER PLOT 3: VAF -------------------------------------
 
     ranges3 <- reactiveValues(x=NULL, y=NULL)
 
     output$exploratory_plot3 <- renderPlot({
       df <- isolate(dat_subset())
-      base_plot <- ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=vc/dp)) +
-        geom_point(aes(shape = individual,
+      ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=vc/dp)) +
+        geom_point(aes(shape = sample,
                        colour= group),
                    size=3)+
         xlab("Loci ordered by the mean of read depth")+
         ylab("VAF")+
         ggtitle("Scatter plot of VAF")+
         coord_cartesian(xlim = ranges3$x, ylim = ranges3$y)
-
-      if (length(groups_selected()) > 6) {
-        base_plot + theme(legend.position = "none")
-      } else {
-        base_plot
-      }
     })
 
     observeEvent(input$plot3_dblclick, {
@@ -234,11 +208,10 @@ observeEvent(input$run_analysis, {
 
   output$stat_graphic_desc <- renderText({
     if (length(groups_selected()) == 2) {
-      "The plot below shows the relationship between VAF in the selected groups for loci in this dataset. Hover over the points to see their locus IDs. Click on them or use the lasso tool in the upper right corner of the plot to select them. Selected loci will appear in the table below, which is automatically ordered by ascending p value. If no points are selected, the table displays all loci. You may download the full table at the bottom of the page."
+      "The plot below shows the relationship between VAF in the selected groups for loci in this dataset. Hover over the points to see their locus IDs. Click on them or use the lasso tool in the upper right corner of the plot to select them. Selected loci will appear in the table below. If no points are selected, the table displays all loci."
     }
-    else {
-      "The table below displays loci and relevant test results. You may download the full table at the bottom of the page."
-    }
+    "The table is automatically sorted by ascending p value, but you can click on any column header to toggle between ascending and descending order. Click inside the white boxes underneath the column headers to filter loci by category, number range, or string match, depending on variable type. You may download the full table at the bottom of the page."
+
   })
 
   # using girafe package to create interactive ggplot
@@ -258,8 +231,16 @@ observeEvent(input$run_analysis, {
       xlab(varx)+
       ylab(vary)+
       ggtitle("Method: p value, raw")+
-      geom_point_interactive(aes(tooltip = ID, data_id = ID, colour=`Sig. diff.`, size = `Total Read Depth`, alpha=0.3), show.legend=FALSE)+
-      theme(text=element_text(size=30))+
+      geom_point_interactive(aes(tooltip = ID,
+                                 data_id = ID,
+                                 colour =`Sig. diff.` == "Difference",
+                                 size = `Total Read Depth`),
+                             alpha=0.5,
+                             show.legend=FALSE)+
+      scale_colour_manual(name = "Sig. diff.",
+                          values = setNames(c("#F8766D","#00BFC4"),
+                                            c(TRUE, FALSE)))+
+      theme(text=element_text(size=20))+
       scale_size_continuous(range = c(5,20))
 
 
@@ -268,10 +249,19 @@ observeEvent(input$run_analysis, {
       theme(axis.title.y=element_blank(),
             axis.text.y.left = element_blank(),
             axis.ticks.y.left = element_blank(),
-            text=element_text(size=30))+
+            text=element_text(size=20))+
       ggtitle("Method: p value, FDR")+
-      geom_point_interactive(aes(tooltip = ID, data_id = ID, colour=`Sig. diff. (FDR)`, size = `Total Read Depth`, alpha=0.3), show.legend=FALSE)+
+      geom_point_interactive(aes(tooltip = ID,
+                                 data_id = ID,
+                                 colour=`Sig. diff. (FDR)` == "Difference",
+                                 size = `Total Read Depth`),
+                             alpha=0.5,
+                             show.legend=FALSE)+
+      scale_colour_manual(name = "Sig. diff. (FDR)",
+                          values = setNames(c("#F8766D","#00BFC4"),
+                                            c(TRUE, FALSE)))+
       scale_size_continuous(range = c(5,20))
+
 
     stat_plot3 <- ggplot(data=df_3, aes_string(x = varx, y = vary))+
       xlab(varx)+
@@ -279,52 +269,45 @@ observeEvent(input$run_analysis, {
             axis.text.y.left = element_blank(),
             axis.ticks.y.left = element_blank(),
             legend.position = "none",
-            text=element_text(size=30))+
+            text=element_text(size=20))+
       ggtitle("Method: change > 0.2")+
-      geom_point_interactive(aes(tooltip = ID, data_id = ID, color=`Sig. change (>0.2)`, size = `Total Read Depth`, alpha=0.3))+
-      scale_alpha(guide="none")+
-      # scale_size(guide="none")+
+      geom_point_interactive(aes(tooltip = ID,
+                                 data_id = ID,
+                                 color=`Sig. change (>0.2)` == "Difference",
+                                 size = `Total Read Depth`),
+                             alpha=0.5)+
+      scale_colour_manual(name = "Significant difference?",
+                          values = setNames(c("#F8766D","#00BFC4"),
+                                            c(TRUE, FALSE)))+
       scale_size_continuous(range = c(5,20))
 
 
     # collecting all plots together in one horizontal row with functions from cowplot package
+    # adding back one legend for all plots
 
     trirow <- plot_grid(stat_plot1,stat_plot2, stat_plot3, align="h", ncol=3, rel_widths = c(1,1,1))
-    legend <- get_legend(stat_plot3 + theme(legend.position = "right"))
+    legend <- get_legend(stat_plot3 + theme(legend.position = "right") + scale_size(guide = "none"))
     complete_plot <- plot_grid(trirow, legend, ncol = 2, rel_widths = c(1, 0.1))
 
     gx <- girafe(ggobj = complete_plot,
                  options = list(
                    opts_zoom(max=5),
-                   opts_hover(css="stroke: gray;stroke-width: 7"),
-                   opts_selection(css="stroke: black;stroke-width: 5"),
-                   opts_resizing = FALSE
+                   opts_hover(css="stroke: gray;stroke-width: 4"),
+                   opts_selection(css="stroke: black;stroke-width: 3")
                  ),
-                 width_svg = 40,
-                 height_svg = 15)
+                 width_svg = 30,
+                 height_svg = 10)
     gx
   })
 
-  # dynamically decide whether to render plot based on number of groups selected
-
-  output$compare_methods <- renderUI ({
-    req(input$run_analysis)
-    if (length(groups_selected()) == 2) {
-      tagList(
-        br(),
-        h4("Graphical comparison of selection methods"),
-        h6("Point size corresponds to read depth"),
-        girafeOutput("stat_plot", height = "100%", width = "100%")
-      )
-    }
-  })
 
 
   output$top_loci <- DT::renderDataTable({
 
     # converting some binary variables to factor for DT column filter functionality
     fordisplay <- result() %>%
-      mutate(across(all_of(c("Overdispersion" ,"Sig. diff.", "Sig. diff. (FDR)", "Sig. change (>0.2)", "Direction")), factor))
+      mutate(across(all_of(c("Overdispersion" ,"Sig. diff.", "Sig. diff. (FDR)", "Sig. change (>0.2)", "Direction")), factor)) %>%
+      select(-c("Total Read Depth"))
 
     # table display options
     if (!("Raw p value" %in% table_options())){
@@ -353,20 +336,16 @@ observeEvent(input$run_analysis, {
 
 
     # only display test column if the test selected was "default" so user knows what was run for each locus
+
     if (method_selected() != "Default") {
       fordisplay <- fordisplay %>%
         select(-c("Test"))
     }
 
-    # fordisplay <- fordisplay %>%
-    #   select(-c(starts_with("VC"), starts_with("DP"), "Test", "P value (adjusted)", "Total Read Depth"))
-
-    # have the table be ordered by ascending p value, initially
-    top_dt <- datatable(fordisplay,
+    top_dt <- datatable(fordisplay[order(result()$`P value`),],
                         rownames = FALSE,
                         filter = "top",
-                        options = list(
-                                       scrollX = TRUE))
+                        options = list(scrollX = TRUE))
     top_dt
 
   })
@@ -380,6 +359,37 @@ observeEvent(input$run_analysis, {
     }
   )
 })
+
+  # dynamically decide whether to render plot based on number of groups selected
+
+  output$compare_methods <- renderUI ({
+    req(input$run_analysis)
+    if (length(groups_selected()) == 2) {
+      tagList(
+        br(),
+        h4("Graphical comparison of selection methods"),
+        h6("Point size corresponds to read depth."),
+        girafeOutput("stat_plot", height = "100%", width = "100%"),
+
+        br(),
+        h4("Table of top selected loci"),
+        DT::dataTableOutput("top_loci"),
+        br(),
+
+        downloadButton("download_toptable", "Download table of all loci as .csv")
+      )
+    } else {
+      tagList(
+        br(),
+        h4("Table of top selected loci"),
+        DT::dataTableOutput("top_loci"),
+        br(),
+
+        downloadButton("download_toptable", "Download table of all loci as .csv")
+      )
+    }
+
+  })
 
 
   # Quality of Sample ----
@@ -397,6 +407,7 @@ observeEvent(input$run_analysis, {
     })
 
   # linear or linear mixed effects model to test for significant biological variability
+
   test_res <- eventReactive(input$run_analysis, {
     df <- req(dat())
     test <- ""
@@ -410,6 +421,7 @@ observeEvent(input$run_analysis, {
   })
 
   # displaying test statistic and p value from above test
+
     output$QC_chisquare <- renderTable({
       if (quality_check() =="Linear") {
         table_results <- matrix(c(test_res()[2,5], test_res()[2,6]), ncol = 2)
@@ -421,13 +433,14 @@ observeEvent(input$run_analysis, {
       table_results
     })
 
-    # print one line about significance in summary based on the p value
+    # print one line about significance based on the p value
+
     output$concl_bio_var <- renderText({
       if (quality_check() == "Linear") {
         if (test_res()[2,6] >= 0.05) {
           paste("The biological variability of the experiment mice with respect to VAF is ", strong("not significant."))
         } else {
-          paste("The biological variability of the experiment mice with respect to VAF is ", strong("significant"), ". Increasing sample size or incorporating important biological covariates into analysis to increase power and accuracy is recommended.")
+          paste("The biological variability of the experiment mice with respect to VAF is ", strong("significant."), " Increasing sample size or incorporating important biological covariates into analysis to increase power and accuracy is recommended.")
         }
        } else if (quality_check() == "Linear mixed-effects") {
          if (test_res()[2,8] >= 0.05) {
