@@ -17,4 +17,4 @@ Please report any issues at https://github.com/zhaungyh/easyVAF/issues.
 
 # References
 
-> Junxiao Hu, Vida Alami, Yonghua Zhuang, Dexiang Gao.  “easyVAF, a R package for VAF comparison among groups”. Journal of Open Source Software, 2022. (*Submitted*)
+> Junxiao Hu, Vida Alami, Yonghua Zhuang, Dexiang Gao.  “easyVAF, a R package for VAF comparison among groups”. Journal of Open Source Software, 2022. (* Preparing for submission*)
