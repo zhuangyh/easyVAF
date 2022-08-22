@@ -1,5 +1,13 @@
 server <- function(input, output) {
 
+  # download button for example data set
+  output$dl_example <- downloadHandler(
+    filename = "example_VAF_data.csv",
+    content = function(file){
+      write.csv(VAF, file, row.names = FALSE)
+    }
+  )
+
   # making reactive dataset from input file (accept .csv only)
 
   dat <- reactive({
@@ -8,7 +16,6 @@ server <- function(input, output) {
     df <- df %>% mutate(across(all_of(c("chrom", "sample", "group")), factor))
     df
   })
-
   # dynamically populate a checkbox selection question with the groups that are in this particular dataset
 
   output$groups <- renderUI({
@@ -105,7 +112,6 @@ server <- function(input, output) {
 
 
   # Exploratory Analysis ----
-  observeEvent(input$run_analysis, {
 
     # INTERACTIVE SCATTER PLOT 1: READ DEPTH -------------------------------------
 
@@ -193,11 +199,11 @@ server <- function(input, output) {
         ranges3$y <- NULL
       }
     })
-  })
+
 
 
   # Statistical Testing ----
-observeEvent(input$run_analysis, {
+
 
   # different text to print depending on whether 2 groups have been selected (plot is displayed) or not (only table is displayed)
 
@@ -301,10 +307,7 @@ observeEvent(input$run_analysis, {
   })
 
 
-
-  output$top_loci <- DT::renderDataTable({
-
-    # converting some binary variables to factor for DT column filter functionality
+  tbl_for_display <- reactive({
     fordisplay <- result() %>%
       mutate(across(all_of(c("Overdispersion" ,"Sig. diff.", "Sig. diff. (FDR)", "Sig. change (>0.2)", "Direction")), factor)) %>%
       select(-c("Total Read Depth"))
@@ -334,7 +337,6 @@ observeEvent(input$run_analysis, {
         select(-c("Effect size", "95% CI", "Direction"))
     }
 
-
     # only display test column if the test selected was "default" so user knows what was run for each locus
 
     if (method_selected() != "Default") {
@@ -342,11 +344,16 @@ observeEvent(input$run_analysis, {
         select(-c("Test"))
     }
 
-    top_dt <- datatable(fordisplay[order(result()$`P value`),],
-                        rownames = FALSE,
-                        filter = "top",
-                        options = list(scrollX = TRUE))
-    top_dt
+    fordisplay
+  })
+
+  output$top_loci <- DT::renderDataTable({
+
+    datatable(tbl_for_display(),
+              rownames = FALSE,
+              filter = "top",
+
+              options = list(scrollX = TRUE))
 
   })
 
@@ -358,7 +365,7 @@ observeEvent(input$run_analysis, {
       write.csv(toptable, file, row.names = FALSE)
     }
   )
-})
+
 
   # dynamically decide whether to render plot based on number of groups selected
 
@@ -368,7 +375,7 @@ observeEvent(input$run_analysis, {
       tagList(
         br(),
         h4("Graphical comparison of selection methods"),
-        h6("Point size corresponds to read depth."),
+        h6("Point size corresponds to total read depth."),
         girafeOutput("stat_plot", height = "100%", width = "100%"),
 
         br(),

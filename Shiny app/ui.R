@@ -11,17 +11,24 @@ library(aod)
 library(easyVAF)
 
 ui <- navbarPage(
-  title = "VAF Analysis",
+  title = "easyVAF Analysis",
   theme = shinytheme("flatly"),
 
   analysis_page <- tabPanel(
     title = "Analysis",
-    titlePanel("Analysis"),
     sidebarLayout(
-      sidebarPanel(width = 3,
-        fileInput("file1","Upload a data file", accept=".csv", width = "100%"),
+      sidebarPanel(
+        width = 3,
+        h3("Options for analysis"),
+        br(),
+
+        downloadButton("dl_example", label= "Download example data"),
+        p(""),
+
+        fileInput("file1", "Upload a data file", accept=".csv", width = "100%"),
+
         uiOutput("groups", width = "100%"),
-        selectInput("method_test", label = "Select test", multiple = FALSE,
+        selectInput("method_test", label = "Select VAF comparison test", multiple = FALSE,
                     choices = c("Default", "Fisher's exact", "Pearson's chi-squared", "Beta-binomial"),
                     selected = "Default",
                     width = "100%"),
@@ -36,9 +43,11 @@ ui <- navbarPage(
         selectInput("table_display", label = "Display significant difference based on:", multiple = TRUE,
                     choices = c("Raw p value", "Adjusted p value", "Effect size > 0.2")),
 
-        actionButton("run_analysis", label = "Run analysis", width="100%", icon("play")),
+
+        actionButton("run_analysis", label = "Run analysis", width="100%", icon("play"), style = "background-color:#19e094"),
         br()
         ),
+
 
       mainPanel(
         tabsetPanel(
@@ -47,7 +56,7 @@ ui <- navbarPage(
             br(),
             p("Displayed on this page are exploratory analysis plots to examine the distribution and variability of ", em("read depths (DP), variant counts (VC), and variant allele frequencies (VAF)"), " of loci."),
             p("Use your mouse to select an area of the plot and double click the selection to zoom in. Double-click again anywhere on the plot to return to the default view."),
-            p("Please note that the color and shape palettes for the plots will only be able to handle 6 variable levels or fewer. If your dataset has more than 6 samples or more than 6 groups, distinctions between all categories may not be reflected in the plot and legend."),
+            p("Please note that the shape palette for the plots will only be able to handle 6 variable levels or fewer. If your dataset has more than 6 samples, distinctions between all samples may not be reflected in the plot and legend."),
             br(),
             plotOutput("exploratory_plot1",
                        height = "700px",
@@ -67,7 +76,7 @@ ui <- navbarPage(
             br(),
             br()
           ),
-          
+
           tabPanel(
             title = "Quality of Sample",
             br(),
@@ -84,13 +93,12 @@ ui <- navbarPage(
             h4("Summary of likelihood ratio test results:"),
             tableOutput("QC_chisquare"),
             br(),
-            
             h4("Conclusion:"),
             htmlOutput("concl_bio_var"),
             br(),
             br()
           ),
-          
+
           tabPanel(
             title = "Statistical Testing",
             br(),
@@ -111,18 +119,20 @@ ui <- navbarPage(
       )
     )
   ),
-  
+
   about_page <- tabPanel(
     title = "About",
     titlePanel("About this software"),
     h5(strong("Authors: "), "Junxiao Hu, Vida Alami, Yonghua Zhuang, Dexiang Gao"),
-    p("This app is intended to accompany the ", em("easyVAF"), " R package to help investigators analyze variant allele frequency (VAF) in their datasets. With interactive plots and tables and downloadable results, this app is a no-code, user-friendly option for applying ", em("easyVAF"), " functions to loci data."),
+    p("This app is intended to accompany the ", em("easyVAF"), " R package to help investigators analyze variant allele frequency (VAF) in their data sets. With interactive plots and tables and downloadable results, this app is a no-code, user-friendly option for applying ", em("easyVAF"), " functions to loci data."),
+    p("The user may upload a data file according to the requirements listed below. An example data set is also provided for download under the \"Options for analysis\" side panel so that users may test the features of the app without needing to have their own data prepared. This is the same data set that comes loaded with the ", em("easyVAF")," package."),
     p("Documentation and code for both the package and this Shiny app are available on Github at ", a(href="https://github.com/zhuangyh/easyVAF", "github.com/zhuangyh/easyVAF"), ". Please report any bugs or suggestions to the contact listed there."),
     hr(),
 
     h2("Data requirements"),
     p("Please upload your data as a comma separated values ", strong("(.csv)"), " file and make sure that it contains the following columns with these exact names:"),
     HTML("<ul><li><b>Locus</b>: locus ID</li><li><b>chrom</b>: chromosome information (for linkage disequilibrium adjustment in QC test, if desired)</li><li><b>vc</b>: variant count</li><li><b>dp</b>: read depth</li><li><b>sample</b></li></ul>"),
+
 
     br(),
     br()
