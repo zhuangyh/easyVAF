@@ -2,23 +2,21 @@ Package: easyVAF
 Type: Package
 Title: VAF comparison among N groups
 Version: 0.1.0
-Author: Junxiao Hu
+Author: 
+    Junxiao Hu[aut, cre],
+    Vida Alami [aut],
+    Yonghua Zhuang [aut],
+    Dexiang Gao [aut]
 Maintainer: Junxiao Hu <Junxiao.Hu@CUAnschutz.edu>
 Description: This package is designed for VAF comparison among N groups. 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Depends: 
-    R (>= 2.10),
-    dplyr, 
-    tibble, 
-    aod, 
-    ggplot2, 
-    lme4
+    R (>= 2.10), dplyr, tibble, aod, ggplot2, lme4
 Imports: Rdpack 
 RdMacros: Rdpack
 RoxygenNote: 7.1.2
 Suggests: 
-    rmarkdown,
-    knitr
+    rmarkdown, knitr
 VignetteBuilder: knitr
