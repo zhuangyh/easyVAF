@@ -1,7 +1,7 @@
 #' Main comparison of VAFs among N groups
 #'
 #' We recommend VAF analysis work flow as following: 1). Start with exploratory plots for Variant Allele Count, Read Depth, and VAF for quality checking (i.e., unexpected biological variability, batch effect, technical effect); 2). Conduct statistical test to assess the variability of overall VAF distribution among the experiment samples (i.e., test if the heterogeneity of experiment samples is significant within each treatment group); 3).The main comparison of VAFs will be conducted as described below: a). For each locus, the goodness of fit test for binomial distribution (overdispersion) is conducted first; b). Appropriate method (model-based or non-parametric) will be selected to perform the VAF comparison among treatment groups; c).	The raw and adjusted p-values will be reported for each locus, accompanied with the estimated VAFs, difference in VAFs and the corresponding confidence intervals (only available for two group comparisons).
-#' @param data VAF data: contains locus,chrom, vc, dp, smapleID
+#' @param data VAF data: contains Locus,chrom, vc, dp, smapleID
 #' @param method Choose from "betabinom", "Exact", "Pearson", the default is NULL, if NULL then conduct main comparison of VAFs following step 3).
 #' @param groups vector of group names, at least two groups
 #' @param digits digit place in result table
@@ -9,7 +9,7 @@
 #' @return rslt	Analysis result table
 #' @export
 #'
-#' @examples data(dat)
+#' @examples data(VAF)
 #' @examples groups <- unique(VAF$group)[c(1:4)]
 #' @examples rslt <- VAFmain(data=VAF, groups=groups)
 #'
@@ -140,7 +140,7 @@ VAFmain <- function(data, method=NULL, groups, digits=3){
 #' @return rslt QC result table
 #' @export
 #'
-#' @examples data(dat)
+#' @examples data(VAF)
 #' @examples rslt <- QCchecking(data=VAF, method="lm")
 #'
 #' @references{
