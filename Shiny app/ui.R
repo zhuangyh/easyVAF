@@ -41,7 +41,8 @@ ui <- navbarPage(
                     width="100%"),
 
         selectInput("table_display", label = "Display significant difference based on:", multiple = TRUE,
-                    choices = c("Raw p value", "Adjusted p value", "Effect size > 0.2")),
+                    choices = c("Raw p value", "Adjusted p value", "Effect size > 0.2"),
+                    selected = c("Raw p value", "Adjusted p value", "Effect size > 0.2")),
 
 
         actionButton("run_analysis", label = "Run analysis", width="100%", icon("play"), style = "background-color:#19e094"),

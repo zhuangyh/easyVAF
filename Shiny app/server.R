@@ -13,9 +13,10 @@ server <- function(input, output) {
   dat <- reactive({
     dat <- req(input$file1)
     df <- read.csv(dat$datapath)
-    df <- df %>% mutate(across(all_of(c("chrom", "sample", "group")), factor))
+    df <- df %>% mutate(across(all_of(c("Locus","chrom", "sample", "group")), factor))
     df
   })
+
   # dynamically populate a checkbox selection question with the groups that are in this particular dataset
 
   output$groups <- renderUI({
@@ -118,7 +119,7 @@ server <- function(input, output) {
     ranges <- reactiveValues(x = NULL, y = NULL)
 
     output$exploratory_plot1 <- renderPlot({
-      df <- isolate(dat_subset())
+      df <- dat_subset()
       ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=dp)) +
         geom_point(aes(shape = sample,
                        colour=group),
@@ -148,7 +149,7 @@ server <- function(input, output) {
     ranges2 <- reactiveValues(x=NULL, y=NULL)
 
     output$exploratory_plot2 <- renderPlot({
-      df <- isolate(dat_subset())
+      df <- dat_subset()
       ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=vc)) +
         geom_point(aes(shape = sample,
                        colour = group),
@@ -177,7 +178,7 @@ server <- function(input, output) {
     ranges3 <- reactiveValues(x=NULL, y=NULL)
 
     output$exploratory_plot3 <- renderPlot({
-      df <- isolate(dat_subset())
+      df <- dat_subset()
       ggplot(data = df, aes(x=reorder(Locus, dp, mean), y=vc/dp)) +
         geom_point(aes(shape = sample,
                        colour= group),
@@ -220,7 +221,7 @@ server <- function(input, output) {
 
   })
 
-  # using girafe package to create interactive ggplot
+  # using girafe package to create interactive ggplot:
     # zoom
     # hover over points and see locus ID
     # download snapshot of plot
@@ -308,7 +309,7 @@ server <- function(input, output) {
 
 
   tbl_for_display <- reactive({
-    fordisplay <- result() %>%
+    fordisplay <- result()[order(result()$`P value`),] %>%
       mutate(across(all_of(c("Overdispersion" ,"Sig. diff.", "Sig. diff. (FDR)", "Sig. change (>0.2)", "Direction")), factor)) %>%
       select(-c("Total Read Depth"))
 
