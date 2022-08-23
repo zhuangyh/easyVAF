@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.7.29)  9 AUG 2022 10:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.7.29)  23 AUG 2022 10:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**/private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpIba8QR/preview-1
-2b154bb032e.dir/Intro_to_easyVAF.tex
+**/private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpVg1RH1/preview-b
+57814c9268e.dir/Intro_to_easyVAF.tex
 
-(/private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpIba8QR/preview-12
-b154bb032e.dir/Intro_to_easyVAF.tex
+(/private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpVg1RH1/preview-b5
+7814c9268e.dir/Intro_to_easyVAF.tex
 LaTeX2e <2020-10-01> patch level 4
 L3 programming layer <2021-02-18> (/usr/local/texlive/2021/texmf-dist/tex/latex
 /base/article.cls
@@ -820,6 +820,19 @@ LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
 [1
 
 {/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Font shape `T1/fvm/m/it' in size <10> not available
+(Font)              Font shape `T1/fvm/m/sl' tried instead on input line 217.
+LaTeX Font Info:    Font shape `T1/fvm/m/sl' will be
+(Font)              scaled to size 7.98004pt on input line 217.
+LaTeX Font Info:    Trying to load font information for TS1+fvm on input line 2
+17.
+(/usr/local/texlive/2021/texmf-dist/tex/latex/bera/ts1fvm.fd
+File: ts1fvm.fd 2004/09/07 scalable font definitions for TS1/fvm.
+)
+LaTeX Font Info:    Font shape `TS1/fvm/m/it' in size <10> not available
+(Font)              Font shape `TS1/fvm/m/sl' tried instead on input line 217.
+LaTeX Font Info:    Font shape `TS1/fvm/m/sl' will be
+(Font)              scaled to size 7.98004pt on input line 217.
 
 Package fancyhdr Warning: \headheight is too small (42.67912pt): 
 (fancyhdr)                Make it at least 46.27916pt, for example:
@@ -829,53 +842,49 @@ Package fancyhdr Warning: \headheight is too small (42.67912pt):
 (fancyhdr)                \addtolength{\topmargin}{-3.60004pt}.
 
 [2]
-Overfull \hbox (85.35825pt too wide) in paragraph at lines 232--232
+Overfull \hbox (85.35825pt too wide) in paragraph at lines 233--233
 [][] 
  []
 
-LaTeX Font Info:    Font shape `T1/fvm/m/it' in size <10> not available
-(Font)              Font shape `T1/fvm/m/sl' tried instead on input line 277.
-LaTeX Font Info:    Font shape `T1/fvm/m/sl' will be
-(Font)              scaled to size 7.98004pt on input line 277.
 Package textcomp Info: Symbol \textasciigrave not provided by
 (textcomp)             font family fvm in TS1 encoding.
-(textcomp)             Default family used instead on input line 277.
+(textcomp)             Default family used instead on input line 278.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
-77.
+78.
 (/usr/local/texlive/2021/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 
-277.
+278.
 (/usr/local/texlive/2021/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 Package textcomp Info: Symbol \textasciigrave not provided by
 (textcomp)             font family fvm in TS1 encoding.
-(textcomp)             Default family used instead on input line 277.
+(textcomp)             Default family used instead on input line 278.
 Package textcomp Info: Symbol \textasciigrave not provided by
 (textcomp)             font family fvm in TS1 encoding.
-(textcomp)             Default family used instead on input line 277.
+(textcomp)             Default family used instead on input line 278.
 Package textcomp Info: Symbol \textasciigrave not provided by
 (textcomp)             font family fvm in TS1 encoding.
-(textcomp)             Default family used instead on input line 277.
+(textcomp)             Default family used instead on input line 278.
 Package textcomp Info: Symbol \textasciigrave not provided by
 (textcomp)             font family fvm in TS1 encoding.
-(textcomp)             Default family used instead on input line 277.
+(textcomp)             Default family used instead on input line 278.
 Package textcomp Info: Symbol \textasciigrave not provided by
 (textcomp)             font family fvm in TS1 encoding.
-(textcomp)             Default family used instead on input line 277.
-</private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpIba8QR/preview-12
-b154bb032e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf, id=76, 578.16pt x 
+(textcomp)             Default family used instead on input line 278.
+</private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpVg1RH1/preview-b5
+7814c9268e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf, id=77, 578.16pt x 
 361.35pt>
-File: /private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpIba8QR/previ
-ew-12b154bb032e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf Graphic file (
+File: /private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpVg1RH1/previ
+ew-b57814c9268e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf Graphic file (
 type pdf)
-<use /private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpIba8QR/previe
-w-12b154bb032e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf>
+<use /private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpVg1RH1/previe
+w-b57814c9268e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf>
 Package pdftex.def Info: /private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn
-/T/RtmpIba8QR/preview-12b154bb032e.dir/Intro_to_easyVAF_files/figure-latex/QC-1
-.pdf  used on input line 282.
+/T/RtmpVg1RH1/preview-b57814c9268e.dir/Intro_to_easyVAF_files/figure-latex/QC-1
+.pdf  used on input line 283.
 (pdftex.def)             Requested size: 341.42903pt x 213.39314pt.
 
 Package fancyhdr Warning: \headheight is too small (42.67912pt): 
@@ -885,17 +894,12 @@ Package fancyhdr Warning: \headheight is too small (42.67912pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-3.60004pt}.
 
-[3 </private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpIba8QR/preview
--12b154bb032e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf>]
-LaTeX Font Info:    Trying to load font information for TS1+fvm on input line 3
-11.
-(/usr/local/texlive/2021/texmf-dist/tex/latex/bera/ts1fvm.fd
-File: ts1fvm.fd 2004/09/07 scalable font definitions for TS1/fvm.
-)
+[3 </private/var/folders/gg/x229s9v17slcr56k298dk9x00000gn/T/RtmpVg1RH1/preview
+-b57814c9268e.dir/Intro_to_easyVAF_files/figure-latex/QC-1.pdf>]
 LaTeX Font Info:    Font shape `TS1/fvm/m/n' will be
-(Font)              scaled to size 7.98004pt on input line 311.
+(Font)              scaled to size 7.98004pt on input line 312.
 
-Overfull \hbox (85.35825pt too wide) in paragraph at lines 358--358
+Overfull \hbox (85.35825pt too wide) in paragraph at lines 359--359
 [][] 
  []
 
@@ -908,12 +912,12 @@ Package fancyhdr Warning: \headheight is too small (42.67912pt):
 (fancyhdr)                \addtolength{\topmargin}{-3.60004pt}.
 
 [4]
-Overfull \hbox (85.35825pt too wide) in paragraph at lines 417--417
+Overfull \hbox (85.35825pt too wide) in paragraph at lines 418--418
 [][] 
  []
 
 
-Overfull \hbox (64.01183pt too wide) in paragraph at lines 419--444
+Overfull \hbox (64.01183pt too wide) in paragraph at lines 420--445
  [] 
  []
 
@@ -933,11 +937,11 @@ Package rerunfilecheck Info: File `Intro_to_easyVAF.out' has not changed.
 (rerunfilecheck)             Checksum: 65EA82F642B347BC7B7DF1552E49DD7E;1589.
  ) 
 Here is how much of TeX's memory you used:
- 16743 strings out of 478994
- 260688 string characters out of 5858184
+ 16747 strings out of 478994
+ 260749 string characters out of 5858184
  611246 words of memory out of 5000000
- 33735 multiletter control sequences out of 15000+600000
- 493013 words of font info for 137 fonts, out of 8000000 for 9000
+ 33738 multiletter control sequences out of 15000+600000
+ 493307 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  86i,13n,88p,1298b,460s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/
@@ -956,7 +960,7 @@ lic/lm/lmssbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/lm/l
 msso10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfit
 1000.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pf
 b></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on Intro_to_easyVAF.pdf (5 pages, 186282 bytes).
+Output written on Intro_to_easyVAF.pdf (5 pages, 186852 bytes).
 PDF statistics:
  163 PDF objects out of 1000 (max. 8388607)
  132 compressed objects within 2 object streams

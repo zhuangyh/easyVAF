@@ -100,7 +100,7 @@ In this document, we illustrate a standard workflow of VAF comparisons with a mo
 ```{r example data, results="asis"}
 library(easyVAF)
 library(knitr)
-data(dat)
+data(VAF)
 names(VAF)
 print(kable(head(VAF), row.names=F,
             caption="VAF data example"))
@@ -170,7 +170,7 @@ print(kable(toploci, row.names=F,
 
 # References
 
-> Junxiao Hu,Vida Alami, Yonghua Zhuang, Dexiang Gao.  “easyVAF, a R package for VAF comparison among groups”. Journal of Open Source Software, 2022. (*Submitted*)
+> Junxiao Hu, Vida Alami, Yonghua Zhuang, Dexiang Gao.  “easyVAF, a R package for VAF comparison among groups”. Journal of Open Source Software, 2022. (*Submitted*)
 
 
 
