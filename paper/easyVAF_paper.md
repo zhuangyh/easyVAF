@@ -211,7 +211,7 @@ where Locus contains the locus ID, vc contains variant count, dp contains read d
 
 ## Quality test results
 
-In the "Quality of Sample" tab, view the distribution of VAF by group and the likelihood ratio test results. The R code and results using the package directly are shown below.
+In the "Quality of Sample" tab, view the distribution of VAF by group and the likelihood ratio test results. The R code and results using the package directly are also shown below.
 
 
 ```r
