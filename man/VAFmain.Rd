@@ -4,10 +4,10 @@
 \alias{VAFmain}
 \title{Main comparison of VAFs among N groups}
 \usage{
-VAFmain(data, method = NULL, groups, digits = 3)
+VAFmain(data, method = NULL, groups, rand = "~ 1", digits = 3)
 }
 \arguments{
-\item{data}{VAF data: contains locus,chrom, vc, dp, smapleID}
+\item{data}{VAF data: contains Locus,chrom, vc, dp, smapleID}
 
 \item{method}{Choose from "betabinom", "Exact", "Pearson", the default is NULL, if NULL then conduct main comparison of VAFs following step 3).}
 
@@ -22,7 +22,7 @@ rslt	Analysis result table
 We recommend VAF analysis work flow as following: 1). Start with exploratory plots for Variant Allele Count, Read Depth, and VAF for quality checking (i.e., unexpected biological variability, batch effect, technical effect); 2). Conduct statistical test to assess the variability of overall VAF distribution among the experiment samples (i.e., test if the heterogeneity of experiment samples is significant within each treatment group); 3).The main comparison of VAFs will be conducted as described below: a). For each locus, the goodness of fit test for binomial distribution (overdispersion) is conducted first; b). Appropriate method (model-based or non-parametric) will be selected to perform the VAF comparison among treatment groups; c).	The raw and adjusted p-values will be reported for each locus, accompanied with the estimated VAFs, difference in VAFs and the corresponding confidence intervals (only available for two group comparisons).
 }
 \examples{
-data(dat)
+data(VAF)
 groups <- unique(VAF$group)[c(1:4)]
 rslt <- VAFmain(data=VAF, groups=groups)
 

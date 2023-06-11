@@ -28,11 +28,12 @@
 #'
 #' @importFrom Rdpack reprompt
 #'
-VAFmain <- function(data, method=NULL, groups, digits=3){
+VAFmain <- function(data, method=NULL, groups, rand="~ 1", digits=3){
   defaultW <- getOption("warn")
   options(warn = -1)
   ID <- unique(data$Locus)
   def <- is.null(method)
+  rand <- as.formula(rand)
   #initialization
   rslt <- data.frame(matrix(NA,    # Create empty data frame
                             nrow = length(ID),
@@ -54,7 +55,7 @@ VAFmain <- function(data, method=NULL, groups, digits=3){
     for(j in 1:length(groups)){
       NMtemp <- subset(temp, group==groups[j], select=c("dp", "vc"))
       testemp <- Tarone.test(NMtemp$dp, NMtemp$vc)
-      dispersion[j] <- ifelse(testemp$p.value < 0.05, T, F)
+      dispersion[j] <- ifelse(testemp$p.value < (0.05/length(groups)), T, F)
     }
     overdispersion <- sum(dispersion, na.rm = T)
     Odispersion <- ifelse(overdispersion>0, "Yes", "No")
@@ -79,8 +80,8 @@ VAFmain <- function(data, method=NULL, groups, digits=3){
       pvalue <- chirslt$p.value
       test <- "Chi-squared"
     }else if(method=="betabinom"){
-      m1 <- betabin(cbind(vc, dp - vc) ~ group, ~ group, temp, hessian=F)
-      m0 <- betabin(cbind(vc, dp - vc) ~ 1, ~ group, temp, hessian=F)
+      m1 <- betabin(cbind(vc, dp - vc) ~ group, rand, temp, hessian=F)
+      m0 <- betabin(cbind(vc, dp - vc) ~ 1, rand, temp, hessian=F)
       betarslt <- anova(m0, m1, "LRT")
       pvalue <- betarslt@anova.table[["P(> Chi2)"]][2]
       test <- "Beta-Binomial LRT"
@@ -105,7 +106,7 @@ VAFmain <- function(data, method=NULL, groups, digits=3){
     )
 
   }
-
+  rslt$P.value <- as.numeric(rslt$P.value)
   rslt$p.adjust <- p.adjust(rslt$P.value, "BH")
   rslt$sig.diff <- ifelse(rslt$P.value < 0.05, "Difference", "No difference")
   rslt$sig.diff.fdr <- ifelse(rslt$p.adjust < 0.05, "Difference", "No difference")
@@ -113,8 +114,8 @@ VAFmain <- function(data, method=NULL, groups, digits=3){
   if(length(groups)==2){
     rslt$sig.change.20 <- ifelse(abs(as.numeric(rslt[,1+3])-as.numeric(rslt[,1+2*3])) > 0.2, "Difference", "No difference")
 
-    rslt$Change.direction <- ifelse(as.numeric(rslt[,1+3])-as.numeric(rslt[,1+2*3]) > 0, "Group1 > Group2",
-                                    ifelse(as.numeric(rslt[,1+3])-as.numeric(rslt[,1+2*3]) < 0, "Group1 < Group2",
+    rslt$Change.direction <- ifelse(as.numeric(rslt[,1+3])-as.numeric(rslt[,1+2*3]) > 0, paste(groups[1], ">", groups[2]),
+                                    ifelse(as.numeric(rslt[,1+3])-as.numeric(rslt[,1+2*3]) < 0, paste(groups[1], "<", groups[2]),
                                            NA
                                     ))
   }else{

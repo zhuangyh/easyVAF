@@ -18,7 +18,7 @@ rslt QC result table
 Quality checking for biological variability among samples
 }
 \examples{
-data(dat)
+data(VAF)
 rslt <- QCchecking(data=VAF, method="lm")
 
 }
